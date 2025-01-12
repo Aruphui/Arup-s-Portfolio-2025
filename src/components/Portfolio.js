@@ -20,7 +20,10 @@ const Portfolio = () => {
           }
         });
       },
-      { threshold: 0.3 }
+      {
+        threshold: 0.2, // Adjusted threshold for better mobile visibility
+        rootMargin: '0px 0px -50% 0px', // Ensures proper section detection on smaller screens
+      }
     );
 
     document.querySelectorAll('section').forEach((section) => {
