@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, Moon, Sun, ExternalLink, ChevronRight } from 'lucide-react';
+import { Menu, Moon, Sun, ExternalLink, ChevronRight, Phone, Mail, MapPin } from 'lucide-react';
 
 const Portfolio = () => {
   const [theme, setTheme] = useState('dark');
