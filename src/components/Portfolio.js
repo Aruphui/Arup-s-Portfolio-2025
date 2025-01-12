@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, Moon, Sun, ExternalLink, ChevronRight, Mail, MapPin, Phone } from 'lucide-react';
+import { Menu, Moon, Sun, ExternalLink, ChevronRight } from 'lucide-react';
 
 const Portfolio = () => {
   const [theme, setTheme] = useState('dark');
@@ -14,8 +14,9 @@ const Portfolio = () => {
           if (entry.isIntersecting) {
             setIsVisible((prev) => ({
               ...prev,
-              [entry.target.id]: true
+              [entry.target.id]: true,
             }));
+            setActiveSection(entry.target.id);
           }
         });
       },
@@ -33,20 +34,50 @@ const Portfolio = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMenuOpen && !event.target.closest('aside') && !event.target.closest('button')) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMenuOpen]);
+
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
+      {/* Overlay for mobile menu */}
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
+
       {/* Mobile Menu Button */}
-      <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="fixed top-4 right-4 p-2 rounded-full bg-gray-800 text-white md:hidden z-50">
+      <button
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        className="fixed top-4 right-4 p-2 rounded-full bg-gray-800 text-white md:hidden z-50"
+        aria-label="Toggle menu"
+      >
         <Menu size={24} />
       </button>
 
       {/* Theme Toggle */}
-      <button onClick={toggleTheme} className="fixed top-4 right-20 p-2 rounded-full bg-gray-800 text-white z-50">
+      <button
+        onClick={toggleTheme}
+        className="fixed top-4 right-16 p-2 rounded-full bg-gray-800 text-white z-50"
+        aria-label="Toggle theme"
+      >
         {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
       </button>
 
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 h-full w-64 bg-gray-800 transform transition-transform duration-300 ease-in-out z-40 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
+      <aside
+        className={`fixed top-0 left-0 h-full w-64 bg-gray-800 transform transition-transform duration-300 ease-in-out z-40 
+        ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 overflow-y-auto`}
+      >
         <div className="h-full flex flex-col justify-between p-6">
           <div>
             <h1 className="text-2xl font-bold text-emerald-400 mb-2">Arup Jyoti Hui</h1>
@@ -55,8 +86,23 @@ const Portfolio = () => {
               <ul className="space-y-4">
                 {['about', 'experience', 'projects', 'skills', 'education', 'certifications', 'contact'].map((section) => (
                   <li key={section}>
-                    <a href={`#${section}`} className={`group flex items-center space-x-2 text-gray-300 hover:text-emerald-400 transition-colors ${activeSection === section ? 'text-emerald-400' : ''}`} onClick={() => { setActiveSection(section); setIsMenuOpen(false); }}>
-                      <ChevronRight size={16} className={`transform transition-transform duration-300 ${activeSection === section ? 'rotate-90' : ''}`} />
+                    <a
+                      href={`#${section}`}
+                      className={`group flex items-center space-x-2 text-gray-300 hover:text-emerald-400 transition-colors ${
+                        activeSection === section ? 'text-emerald-400' : ''
+                      }`}
+                      onClick={() => {
+                        setActiveSection(section);
+                        setIsMenuOpen(false);
+                        document.getElementById(section).scrollIntoView({ behavior: 'smooth' });
+                      }}
+                    >
+                      <ChevronRight
+                        size={16}
+                        className={`transform transition-transform duration-300 ${
+                          activeSection === section ? 'rotate-90' : ''
+                        }`}
+                      />
                       <span className="capitalize">{section}</span>
                     </a>
                   </li>
@@ -66,14 +112,28 @@ const Portfolio = () => {
           </div>
           <div>
             <div className="flex justify-between mb-4">
-        
-              <a href="https://www.linkedin.com/in/aruphui" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 flex items-center">
+              <a
+                href="https://www.linkedin.com/in/aruphui"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-emerald-400 flex items-center"
+              >
                 <ExternalLink size={20} />
               </a>
-              <a href="https://instagram.com/arup.hui" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 flex items-center">
+              <a
+                href="https://instagram.com/arup.hui"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-emerald-400 flex items-center"
+              >
                 <ExternalLink size={20} />
               </a>
-              <a href="https://x.com/arup_hui" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 flex items-center">
+              <a
+                href="https://x.com/arup_hui"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-emerald-400 flex items-center"
+              >
                 <ExternalLink size={20} />
               </a>
             </div>
