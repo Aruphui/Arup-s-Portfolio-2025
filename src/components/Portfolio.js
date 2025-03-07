@@ -6,75 +6,129 @@ const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('about');
   const [isVisible, setIsVisible] = useState({});
-  const [touchDevice, setTouchDevice] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Detect touch device on mount
+  // Check screen size and update isMobile state
   useEffect(() => {
-    setTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Enhanced intersection observer for better cross-device behavior
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible((prev) => ({
-              ...prev,
-              [entry.target.id]: true,
-            }));
+    const options = {
+      threshold: isMobile ? 0.1 : 0.2,
+      rootMargin: isMobile ? '0px 0px -10% 0px' : '0px 0px -30% 0px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        // Mark section as visible when it enters viewport
+        if (entry.isIntersecting) {
+          setIsVisible((prev) => ({
+            ...prev,
+            [entry.target.id]: true,
+          }));
+          
+          // Only update active section if entry is significantly visible (over 30% visible)
+          if (entry.intersectionRatio > 0.3) {
             setActiveSection(entry.target.id);
           }
-        });
-      },
-      {
-        threshold: 0.2, 
-        rootMargin: '0px 0px -50% 0px',
-      }
-    );
+        }
+      });
+    }, options);
 
-    document.querySelectorAll('section').forEach((section) => {
+    // Make sure all sections are observed
+    const sections = document.querySelectorAll('section');
+    sections.forEach((section) => {
       observer.observe(section);
     });
 
+    // Force visibility check on mobile when menu is opened
+    if (isMobile && isMenuOpen) {
+      sections.forEach((section) => {
+        setIsVisible((prev) => ({
+          ...prev,
+          [section.id]: true,
+        }));
+      });
+    }
+
     return () => observer.disconnect();
-  }, []);
+  }, [isMobile, isMenuOpen]);
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  // Enhanced mobile menu handling
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isMenuOpen && !event.target.closest('aside') && !event.target.closest('button')) {
+      if (isMenuOpen && !event.target.closest('aside') && !event.target.closest('button.menu-toggle')) {
         setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isMenuOpen]);
+    // Handle scroll locking when menu is open on mobile
+    if (isMobile) {
+      document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    }
 
-  // Added functionality to close menu when clicking a link on mobile
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen, isMobile]);
+
+  // Improved navigation handling for mobile
   const handleNavClick = (section) => {
-    setActiveSection(section);
+    // Close menu first on mobile to prevent scroll issues
     setIsMenuOpen(false);
-    document.getElementById(section).scrollIntoView({ behavior: 'smooth' });
+    
+    // Small delay to ensure menu closes before scrolling
+    setTimeout(() => {
+      const element = document.getElementById(section);
+      if (element) {
+        // Calculate position accounting for any fixed headers
+        const headerOffset = isMobile ? 20 : 30;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        
+        setActiveSection(section);
+      }
+    }, isMobile ? 300 : 0);
   };
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
-      {/* Overlay for mobile menu */}
+      {/* Improved overlay for mobile menu */}
       {isMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-70 z-40 md:hidden transition-opacity duration-300"
           onClick={() => setIsMenuOpen(false)}
         />
       )}
 
-      {/* Mobile Menu Button */}
+      {/* Enhanced Mobile Menu Button */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="fixed top-4 right-4 p-2 rounded-full bg-gray-800 text-white md:hidden z-50"
+        className="fixed top-4 right-4 p-2 rounded-full bg-gray-800 text-white md:hidden z-50 menu-toggle"
         aria-label="Toggle menu"
       >
         <Menu size={24} />
@@ -89,10 +143,13 @@ const Portfolio = () => {
         {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
       </button>
 
-      {/* Sidebar */}
+      {/* Improved Sidebar/Mobile Menu */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-gray-800 transform transition-transform duration-300 ease-in-out z-40 
-        ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 overflow-y-auto`}
+        className={`fixed top-0 h-full bg-gray-800 transition-all duration-300 ease-in-out z-40 overflow-y-auto
+        ${isMobile 
+          ? `left-0 w-full ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`
+          : `left-0 w-64 translate-x-0`
+        }`}
       >
         <div className="h-full flex flex-col justify-between p-6">
           <div>
@@ -104,7 +161,7 @@ const Portfolio = () => {
                   <li key={section}>
                     <a
                       href={`#${section}`}
-                      className={`group flex items-center space-x-2 text-gray-300 hover:text-emerald-400 transition-colors ${
+                      className={`group flex items-center space-x-2 text-gray-300 hover:text-emerald-400 transition-colors py-2 ${
                         activeSection === section ? 'text-emerald-400' : ''
                       }`}
                       onClick={(e) => {
@@ -118,7 +175,7 @@ const Portfolio = () => {
                           activeSection === section ? 'rotate-90' : ''
                         }`}
                       />
-                      <span className="capitalize">{section}</span>
+                      <span className="capitalize text-lg">{section}</span>
                     </a>
                   </li>
                 ))}
@@ -169,64 +226,63 @@ const Portfolio = () => {
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="md:ml-64 p-6 md:p-12">
+      {/* Improved Main Content with better mobile support */}
+      <main className={`transition-all duration-300 ${isMobile ? 'px-4 py-16' : 'md:ml-64 p-6 md:p-12'}`}>
         {/* About Section */}
-        <section id="about" className={`mb-16 transform transition-all duration-700 ${isVisible.about ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+        <section id="about" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.about ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">About</h3>
           <p className="text-lg leading-relaxed">
           Results-driven Cloud & DevOps Engineer with extensive experience in managing cloud infrastructure, implementing CI/CD pipelines, and utilizing Infrastructure as Code (IaC). Skilled in container orchestration and automation, with proficiency in a wide range of tools and technologies including Docker, Kubernetes, Terraform, Azure DevOps, Jenkins, Git, and Shell Scripting. Expertise in Azure IaaS & PaaS, Azure Networking, AWS, Ansible, and Linux. Adept at optimizing deployment procedures, enhancing system reliability, and driving organizational efficiency.
           </p>
         </section>
 
-        {/* Experience Section - Modified for better mobile display */}
-<section 
-  id="experience" 
-  className={`mb-16 transform transition-all duration-700 ${
-    isVisible.experience ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-  }`}
-  style={{ minHeight: '50px' }} // Add min-height to ensure visibility
->
-  <h3 className="text-3xl font-bold text-emerald-400 mb-6">Experience</h3>
-  <div className="space-y-8">
-    {[
-      {
-        title: "DevOps Engineer",
-        company: "Metlife LTD",
-        period: "Sep, 2024 — Present",
-        description: "As a DevOps Engineer, I have hands-on experience working with a wide range of technologies, including Terraform Cloud for infrastructure management and automation, Azure DevOps for continuous integration and continuous delivery (CI/CD) pipelines, and Azure Kubernetes Service (AKS) for container orchestration. I have managed AKS upgrades, ensuring the smooth operation of Kubernetes clusters while maintaining optimal performance and security. I have implemented Istio for service mesh management, optimizing microservices communication, monitoring, and security within AKS environments. My expertise extends to PowerShell scripting, where I have automated workflows and integrated various Azure services. Additionally, I have significant experience with Terraform for infrastructure as code, enabling the creation, management, and scaling of cloud resources efficiently. My work includes building and maintaining CI/CD pipelines, automating deployment processes, and ensuring streamlined operations across various cloud services. With a deep understanding of Azure IaaS, PaaS, and DevOps practices, I provide reliable and scalable solutions for cloud infrastructure and application management."
-      },
-      {
-        title: "DevOps Engineer",
-        company: "Coforge LTD",
-        period: "May, 2023 — Sep, 2024",
-        description: "A highly skilled Cloud & DevOps Engineer with extensive experience in designing and implementing CI/CD pipelines using Jenkins and Azure DevOps to streamline software development and optimize deployment workflows. Proficient in Infrastructure as Code (IaC) methodologies, particularly leveraging Terraform for efficient, consistent, and reproducible infrastructure provisioning. Demonstrates deep expertise in the Microsoft Azure cloud platform, with hands-on experience in managing a wide range of services including Virtual Machines, Azure Container Instances, Kubernetes Service, Docker, Azure App Service, and Logic Apps. Committed to integrating best CI/CD and DevOps practices, focusing on automating the entire application lifecycle, from building to testing and deployment. Additionally, exhibits advanced proficiency in AWS, Azure Infrastructure as a Service (IaaS), Azure Networking, implementation of conditional access policies, Azure Storage, policy deployment, Ansible, and Shell scripting, ensuring robust, scalable, and secure cloud solutions."
-      },
-      {
-        title: "Cloud & DevOps Engineer",
-        company: "Wipro",
-        period: "Nov, 2021 — May, 2023",
-        description: "Highly proficient in Azure DevOps practices with a comprehensive understanding of Infrastructure as a Service (IaaS) and Platform as a Service (PaaS). Expertise in cloud computing, Docker, Azure Kubernetes Service (AKS), Git, and various monitoring tools. Proven ability to identify and address security vulnerabilities to maintain robust security postures. Specialized in the development and deployment of serverless technologies, focusing on utilizing Logic Apps and Service Bus for efficient integration processes. Extensive experience in Azure networking, adept at configuring and managing Virtual Networks (Vnets), Load Balancers, Application Gateways, Traffic Managers, ExpressRoute, Network Security Groups (NSGs), Application Security Groups (ASGs), Route Tables, and Network Watcher to ensure optimal network performance and security. Skilled in leveraging Data Analytics to drive informed decision-making and improve operational efficiency. Demonstrated success in orchestrating migrations from on-premises and VMware environments to Azure, showcasing strong project management capabilities."
-      }
-    ].map((job, index) => (
-      <div 
-        key={index} 
-        className="group relative pl-8 border-l-2 border-gray-700 hover:border-emerald-400 transition-colors"
-      >
-        <div 
-          className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-gray-700 group-hover:bg-emerald-400 transition-colors" 
-        />
-        <h4 className="text-xl font-semibold mb-1">{job.title}</h4>
-        <h5 className="text-lg text-emerald-400 mb-1">{job.company}</h5>
-        <p className="text-gray-400 mb-4">{job.period}</p>
-        <p className="text-base md:text-base" style={{ wordBreak: 'break-word' }}>{job.description}</p>
-      </div>
-    ))}
-  </div>
-</section>
+        {/* Experience Section - Improved for mobile display */}
+        <section id="experience" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.experience ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+          <h3 className="text-3xl font-bold text-emerald-400 mb-6">Experience</h3>
+          <div className="space-y-8">
+            {[
+              {
+                title: "DevOps Engineer",
+                company: "Metlife LTD",
+                period: "Sep, 2024 — Present",
+                description: "As a DevOps Engineer, I have hands-on experience working with a wide range of technologies, including Terraform Cloud for infrastructure management and automation, Azure DevOps for continuous integration and continuous delivery (CI/CD) pipelines, and Azure Kubernetes Service (AKS) for container orchestration. I have managed AKS upgrades, ensuring the smooth operation of Kubernetes clusters while maintaining optimal performance and security. I have implemented Istio for service mesh management, optimizing microservices communication, monitoring, and security within AKS environments."
+              },
+              {
+                title: "DevOps Engineer",
+                company: "Coforge LTD",
+                period: "May, 2023 — Sep, 2024",
+                description: "A highly skilled Cloud & DevOps Engineer with extensive experience in designing and implementing CI/CD pipelines using Jenkins and Azure DevOps to streamline software development and optimize deployment workflows. Proficient in Infrastructure as Code (IaC) methodologies, particularly leveraging Terraform for efficient, consistent, and reproducible infrastructure provisioning. Demonstrates deep expertise in the Microsoft Azure cloud platform, with hands-on experience in managing a wide range of services."
+              },
+              {
+                title: "Cloud & DevOps Engineer",
+                company: "Wipro",
+                period: "Nov, 2021 — May, 2023",
+                description: "Highly proficient in Azure DevOps practices with a comprehensive understanding of Infrastructure as a Service (IaaS) and Platform as a Service (PaaS). Expertise in cloud computing, Docker, Azure Kubernetes Service (AKS), Git, and various monitoring tools. Proven ability to identify and address security vulnerabilities to maintain robust security postures. Specialized in the development and deployment of serverless technologies, focusing on utilizing Logic Apps and Service Bus for efficient integration processes."
+              }
+            ].map((job, index) => (
+              <div key={index} className="group relative pl-8 border-l-2 border-gray-700 hover:border-emerald-400 transition-colors">
+                <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-gray-700 group-hover:bg-emerald-400 transition-colors" />
+                <h4 className="text-xl font-semibold mb-1">{job.title}</h4>
+                <h5 className="text-lg text-emerald-400 mb-1">{job.company}</h5>
+                <p className="text-gray-400 mb-4">{job.period}</p>
+                <p className="text-base" style={{ wordBreak: 'break-word' }}>{job.description}</p>
+                
+                {/* Mobile-friendly details toggle */}
+                {job.description.length > 300 && (
+                  <details className="mt-3">
+                    <summary className="text-emerald-400 cursor-pointer">See more</summary>
+                    <p className="mt-2 text-base">
+                      My expertise extends to PowerShell scripting, where I have automated workflows and integrated various Azure services. Additionally, I have significant experience with Terraform for infrastructure as code, enabling the creation, management, and scaling of cloud resources efficiently. My work includes building and maintaining CI/CD pipelines, automating deployment processes, and ensuring streamlined operations across various cloud services. With a deep understanding of Azure IaaS, PaaS, and DevOps practices, I provide reliable and scalable solutions for cloud infrastructure and application management.
+                    </p>
+                  </details>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
 
-        {/* Skills Section */}
-        <section id="skills" className={`mb-16 transform transition-all duration-700 ${isVisible.skills ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+        {/* Skills Section - Improved for mobile */}
+        <section id="skills" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.skills ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Skills</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {[
@@ -234,15 +290,15 @@ const Portfolio = () => {
               "CI/CD Pipelines", "Git", "Jenkins", "Infrastructure as Code (IaC)",
               "Monitoring and Logging", "Shell Scripting", "Ansible", "Networking", "Linux"
             ].map((skill, index) => (
-              <div key={index} className={`p-4 rounded-lg bg-gray-800 ${!touchDevice ? 'hover:bg-gray-700 hover:-translate-y-1' : 'active:bg-gray-700'} transition-all duration-300`}>
+              <div key={index} className="p-4 rounded-lg bg-gray-800 hover:bg-gray-700 active:bg-gray-700 transition-all duration-300 text-center">
                 {skill}
               </div>
             ))}
           </div>
         </section>
 
-        {/* Projects Section - Modified for better mobile response */}
-        <section id="projects" className={`mb-16 transform transition-all duration-700 ${isVisible.projects ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+        {/* Projects Section - Improved responsiveness */}
+        <section id="projects" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.projects ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Projects</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -252,9 +308,7 @@ const Portfolio = () => {
                 details: [
                   "CI/CD Pipeline Creation: Designed and implemented robust CI/CD pipelines using Azure DevOps, automating the build, test, and deployment processes.",
                   "Infrastructure as Code (IaC): Utilized Terraform to codify the infrastructure setup for the Kubernetes clusters.",
-                  "Kubernetes Orchestration: Deployed and managed the Kubernetes clusters with health checks and auto-scaling policies.",
-                  "Containerization with Docker: Containerized the microservices using Docker, optimizing images for size and speed.",
-                  "Monitoring and Logging: Integrated monitoring and logging solutions to track health and performance."
+                  "Kubernetes Orchestration: Deployed and managed the Kubernetes clusters with health checks and auto-scaling policies."
                 ],
                 techStack: ["Terraform", "Azure DevOps", "Kubernetes", "Docker", "Azure Monitor"],
               },
@@ -264,9 +318,7 @@ const Portfolio = () => {
                 details: [
                   "Terraform (IaC): Defined Azure resources as code, facilitating version control and consistency.",
                   "Azure DevOps CI/CD Pipeline: Created automated resource provisioning with stages for build, test, and deployment.",
-                  "Azure Automation Runbooks: Developed runbooks to automate daily operational tasks.",
-                  "GitHub Actions: Integrated GitHub Actions to automate workflows like code validation and testing.",
-                  "Ansible Automation: Leveraged Ansible for configuration management and infrastructure orchestration."
+                  "Azure Automation Runbooks: Developed runbooks to automate daily operational tasks."
                 ],
                 techStack: ["Terraform", "Azure DevOps", "Azure Automation", "GitHub Actions", "Ansible"],
               },
@@ -276,14 +328,12 @@ const Portfolio = () => {
                 details: [
                   "ServiceNow Event Management: Automated incident generation based on alerts from Azure Monitor.",
                   "Logic App Integration: Designed a workflow to automatically respond to alerts.",
-                  "Kusto Query Language (KQL): Implemented queries to filter and process essential alert data.",
-                  "Log Analytics: Stored and managed telemetry data from Azure resources.",
-                  "Azure Monitor: Core monitoring and alerting system generating alerts for operational issues."
+                  "Kusto Query Language (KQL): Implemented queries to filter and process essential alert data."
                 ],
                 techStack: ["Logic App", "Kusto Query Language", "Log Analytics", "ServiceNow", "Azure Monitor"],
               }
             ].map((project, index) => (
-              <div key={index} className={`bg-gray-800 p-6 rounded-lg shadow-lg transition-all duration-300 ${touchDevice ? 'active:bg-gray-700 active:scale-102' : 'hover:scale-105'}`}>
+              <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-lg transition-all duration-300 hover:transform hover:scale-105 active:scale-105">
                 <h4 className="text-2xl font-semibold text-emerald-400 mb-4">{project.title}</h4>
                 <p className="text-gray-300 mb-4">{project.description}</p>
                 
@@ -298,8 +348,8 @@ const Portfolio = () => {
                 </details>
                 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {project.techStack.map((tech, index) => (
-                    <span key={index} className="text-sm text-gray-400 bg-gray-700 rounded-full py-1 px-3">
+                  {project.techStack.map((tech, tIndex) => (
+                    <span key={tIndex} className="text-sm text-gray-400 bg-gray-700 rounded-full py-1 px-3">
                       {tech}
                     </span>
                   ))}
@@ -309,8 +359,8 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* Certifications Section - Modified for better mobile response */}
-        <section id="certifications" className={`mb-16 transform transition-all duration-700 ${isVisible.certifications ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+        {/* Certifications Section - Improved for mobile */}
+        <section id="certifications" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.certifications ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Certifications</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -331,23 +381,11 @@ const Portfolio = () => {
                 description: "This certification validates the skills required to implement and manage Azure networking solutions.",
                 issuedBy: "Microsoft",
                 link: "https://learn.microsoft.com/api/credentials/share/en-us/ArupJyotiHui-6587/1B13A26007F9093A?sharingId"
-              },
-              {
-                title: "Microsoft Certified: Azure Solutions Architect Expert",
-                description: "This certification is designed for professionals who design cloud and hybrid solutions on Azure.",
-                issuedBy: "Microsoft",
-                link: "https://learn.microsoft.com/api/credentials/share/en-us/ArupJyotiHui-6587/F80853163F5A0859?sharingId"
-              },
-              {
-                title: "Microsoft Certified: Azure Administrator Associate",
-                description: "This certification validates the skills required to manage Azure subscriptions, implement storage solutions, configure virtual networks.",
-                issuedBy: "Microsoft",
-                link: "https://learn.microsoft.com/api/credentials/share/en-us/ArupJyotiHui-6587/3F84C2AD81FAF448?sharingId"
               }
             ].map((certification, index) => (
-              <div key={index} className={`bg-gray-800 p-6 rounded-lg shadow-lg transition-all duration-300 ${touchDevice ? 'active:bg-gray-700 active:scale-102' : 'hover:scale-105'} relative overflow-hidden group`}>
-                {/* Badge overlay - appears on hover/touch */}
-                <div className={`absolute top-2 right-2 rounded-full bg-emerald-500 text-white p-2 transform ${touchDevice ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-all duration-300`}>
+              <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-lg transition-all duration-300 hover:transform hover:scale-105 active:scale-105 relative overflow-hidden group">
+                {/* Badge overlay - visible by default on mobile */}
+                <div className="absolute top-2 right-2 rounded-full bg-emerald-500 text-white p-2 opacity-100 transition-all duration-300">
                   <ExternalLink size={16} />
                 </div>
                 
@@ -364,8 +402,8 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* Education Section */}
-        <section id="education" className={`mb-16 transform transition-all duration-700 ${isVisible.education ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+        {/* Education Section - Improved for mobile */}
+        <section id="education" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.education ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Education</h3>
           <div className="space-y-6">
             {[
@@ -391,8 +429,8 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* Contact Section - Enhanced for better UX */}
-        <section id="contact" className={`mb-16 transform transition-all duration-700 ${isVisible.contact ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+        {/* Contact Section - Improved for mobile */}
+        <section id="contact" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.contact ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Contact</h3>
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <p className="text-lg mb-6">Get in touch with me!</p>
@@ -402,14 +440,14 @@ const Portfolio = () => {
                 <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-4">
                   <Phone size={20} className="text-emerald-400" />
                 </div>
-                +91 123 456 7890
+                <span className="break-all">+91 123 456 7890</span>
               </a>
               
               <a href="mailto:arup.jyoti.hui@example.com" className="flex items-center text-lg text-gray-300 hover:text-emerald-400 transition-colors p-2 rounded-lg hover:bg-gray-700">
                 <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-4">
                   <Mail size={20} className="text-emerald-400" />
                 </div>
-                arup.jyoti.hui@example.com
+                <span className="break-all">arup.jyoti.hui@example.com</span>
               </a>
               
               <div className="flex items-center text-lg text-gray-300 p-2 rounded-lg">
@@ -441,8 +479,8 @@ const Portfolio = () => {
           </div>
         </section>
         
-        {/* Footer */}
-        <footer className="text-center text-gray-400 pb-8">
+        {/* Footer - Improved for mobile */}
+        <footer className="text-center text-gray-400 pb-8 pt-8">
           <p>© 2025 Arup Jyoti Hui. All rights reserved.</p>
           <p className="mt-2">Built with React and Tailwind CSS</p>
         </footer>
