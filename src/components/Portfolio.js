@@ -236,7 +236,7 @@ const Portfolio = () => {
           </p>
         </section>
 
-        {/* Experience Section - Improved for mobile display */}
+        {/* Experience Section - Modified to show all content */}
         <section id="experience" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.experience ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Experience</h3>
           <div className="space-y-8">
@@ -245,19 +245,19 @@ const Portfolio = () => {
                 title: "DevOps Engineer",
                 company: "Metlife LTD",
                 period: "Sep, 2024 — Present",
-                description: "As a DevOps Engineer, I have hands-on experience working with a wide range of technologies, including Terraform Cloud for infrastructure management and automation, Azure DevOps for continuous integration and continuous delivery (CI/CD) pipelines, and Azure Kubernetes Service (AKS) for container orchestration. I have managed AKS upgrades, ensuring the smooth operation of Kubernetes clusters while maintaining optimal performance and security. I have implemented Istio for service mesh management, optimizing microservices communication, monitoring, and security within AKS environments."
+                description: "As a DevOps Engineer, I have hands-on experience working with a wide range of technologies, including Terraform Cloud for infrastructure management and automation, Azure DevOps for continuous integration and continuous delivery (CI/CD) pipelines, and Azure Kubernetes Service (AKS) for container orchestration. I have managed AKS upgrades, ensuring the smooth operation of Kubernetes clusters while maintaining optimal performance and security. I have implemented Istio for service mesh management, optimizing microservices communication, monitoring, and security within AKS environments. My expertise extends to PowerShell scripting, where I have automated workflows and integrated various Azure services. Additionally, I have significant experience with Terraform for infrastructure as code, enabling the creation, management, and scaling of cloud resources efficiently. My work includes building and maintaining CI/CD pipelines, automating deployment processes, and ensuring streamlined operations across various cloud services. With a deep understanding of Azure IaaS, PaaS, and DevOps practices, I provide reliable and scalable solutions for cloud infrastructure and application management."
               },
               {
                 title: "DevOps Engineer",
                 company: "Coforge LTD",
                 period: "May, 2023 — Sep, 2024",
-                description: "A highly skilled Cloud & DevOps Engineer with extensive experience in designing and implementing CI/CD pipelines using Jenkins and Azure DevOps to streamline software development and optimize deployment workflows. Proficient in Infrastructure as Code (IaC) methodologies, particularly leveraging Terraform for efficient, consistent, and reproducible infrastructure provisioning. Demonstrates deep expertise in the Microsoft Azure cloud platform, with hands-on experience in managing a wide range of services."
+                description: "A highly skilled Cloud & DevOps Engineer with extensive experience in designing and implementing CI/CD pipelines using Jenkins and Azure DevOps to streamline software development and optimize deployment workflows. Proficient in Infrastructure as Code (IaC) methodologies, particularly leveraging Terraform for efficient, consistent, and reproducible infrastructure provisioning. Demonstrates deep expertise in the Microsoft Azure cloud platform, with hands-on experience in managing a wide range of services. My expertise extends to PowerShell scripting, where I have automated workflows and integrated various Azure services. Additionally, I have significant experience with Terraform for infrastructure as code, enabling the creation, management, and scaling of cloud resources efficiently. My work includes building and maintaining CI/CD pipelines, automating deployment processes, and ensuring streamlined operations across various cloud services. With a deep understanding of Azure IaaS, PaaS, and DevOps practices, I provide reliable and scalable solutions for cloud infrastructure and application management."
               },
               {
                 title: "Cloud & DevOps Engineer",
                 company: "Wipro",
                 period: "Nov, 2021 — May, 2023",
-                description: "Highly proficient in Azure DevOps practices with a comprehensive understanding of Infrastructure as a Service (IaaS) and Platform as a Service (PaaS). Expertise in cloud computing, Docker, Azure Kubernetes Service (AKS), Git, and various monitoring tools. Proven ability to identify and address security vulnerabilities to maintain robust security postures. Specialized in the development and deployment of serverless technologies, focusing on utilizing Logic Apps and Service Bus for efficient integration processes."
+                description: "Highly proficient in Azure DevOps practices with a comprehensive understanding of Infrastructure as a Service (IaaS) and Platform as a Service (PaaS). Expertise in cloud computing, Docker, Azure Kubernetes Service (AKS), Git, and various monitoring tools. Proven ability to identify and address security vulnerabilities to maintain robust security postures. Specialized in the development and deployment of serverless technologies, focusing on utilizing Logic Apps and Service Bus for efficient integration processes. My expertise extends to PowerShell scripting, where I have automated workflows and integrated various Azure services. Additionally, I have significant experience with Terraform for infrastructure as code, enabling the creation, management, and scaling of cloud resources efficiently. My work includes building and maintaining CI/CD pipelines, automating deployment processes, and ensuring streamlined operations across various cloud services. With a deep understanding of Azure IaaS, PaaS, and DevOps practices, I provide reliable and scalable solutions for cloud infrastructure and application management."
               }
             ].map((job, index) => (
               <div key={index} className="group relative pl-8 border-l-2 border-gray-700 hover:border-emerald-400 transition-colors">
@@ -266,22 +266,12 @@ const Portfolio = () => {
                 <h5 className="text-lg text-emerald-400 mb-1">{job.company}</h5>
                 <p className="text-gray-400 mb-4">{job.period}</p>
                 <p className="text-base" style={{ wordBreak: 'break-word' }}>{job.description}</p>
-                
-                {/* Mobile-friendly details toggle */}
-                {job.description.length > 300 && (
-                  <details className="mt-3">
-                    <summary className="text-emerald-400 cursor-pointer">See more</summary>
-                    <p className="mt-2 text-base">
-                      My expertise extends to PowerShell scripting, where I have automated workflows and integrated various Azure services. Additionally, I have significant experience with Terraform for infrastructure as code, enabling the creation, management, and scaling of cloud resources efficiently. My work includes building and maintaining CI/CD pipelines, automating deployment processes, and ensuring streamlined operations across various cloud services. With a deep understanding of Azure IaaS, PaaS, and DevOps practices, I provide reliable and scalable solutions for cloud infrastructure and application management.
-                    </p>
-                  </details>
-                )}
               </div>
             ))}
           </div>
         </section>
 
-        {/* Skills Section - Improved for mobile */}
+        {/* Skills Section */}
         <section id="skills" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.skills ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Skills</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -297,7 +287,7 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* Projects Section - Improved responsiveness */}
+        {/* Projects Section - Modified to show all content by default */}
         <section id="projects" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.projects ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Projects</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -337,15 +327,15 @@ const Portfolio = () => {
                 <h4 className="text-2xl font-semibold text-emerald-400 mb-4">{project.title}</h4>
                 <p className="text-gray-300 mb-4">{project.description}</p>
                 
-                {/* Accordion for project details - mobile friendly */}
-                <details className="mb-4 cursor-pointer">
-                  <summary className="text-emerald-400 font-medium mb-2">View Details</summary>
-                  <ul className="list-disc pl-5 space-y-2 mt-2">
+                {/* Project details shown by default */}
+                <div className="mb-4">
+                  <h5 className="text-emerald-400 font-medium mb-2">Details</h5>
+                  <ul className="list-disc pl-5 space-y-2">
                     {project.details.map((detail, i) => (
                       <li key={i} className="text-gray-300">{detail}</li>
                     ))}
                   </ul>
-                </details>
+                </div>
                 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.techStack.map((tech, tIndex) => (
@@ -359,7 +349,7 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* Certifications Section - Improved for mobile */}
+        {/* Certifications Section */}
         <section id="certifications" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.certifications ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Certifications</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -402,7 +392,7 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* Education Section - Improved for mobile */}
+        {/* Education Section */}
         <section id="education" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.education ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Education</h3>
           <div className="space-y-6">
@@ -429,7 +419,7 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* Contact Section - Improved for mobile */}
+        {/* Contact Section */}
         <section id="contact" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.contact ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h3 className="text-3xl font-bold text-emerald-400 mb-6">Contact</h3>
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
@@ -479,7 +469,7 @@ const Portfolio = () => {
           </div>
         </section>
         
-        {/* Footer - Improved for mobile */}
+        {/* Footer */}
         <footer className="text-center text-gray-400 pb-8 pt-8">
           <p>© 2025 Arup Jyoti Hui. All rights reserved.</p>
           <p className="mt-2">Built with React and Tailwind CSS</p>
