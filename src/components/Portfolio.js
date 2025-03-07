@@ -314,11 +314,13 @@ const Portfolio = () => {
               },
               {
                 title: "Azure Monitor and ServiceNow Integration",
-                description: "Integrated Azure Monitor with ServiceNow Event Management to automate incident creation in response to Azure alerts.",
+                description: "As a crucial part of our project, we successfully integrated Azure Monitor with ServiceNow Event Management to automate incident creation in response to Azure alerts. This integration not only streamlined our operational processes but also significantly improved incident tracking and management.",
                 details: [
-                  "ServiceNow Event Management: Automated incident generation based on alerts from Azure Monitor.",
-                  "Logic App Integration: Designed a workflow to automatically respond to alerts.",
-                  "Kusto Query Language (KQL): Implemented queries to filter and process essential alert data."
+                  "ServiceNow Event Management: The ServiceNow Event Management tool played a pivotal role in the automation of incident generation. It seamlessly received, processed, and managed incidents based on the alerts received from Azure Monitor.",
+                  "Logic App Integration: We harnessed the power of Azure Logic App to design a robust workflow that automatically responded to alerts triggered by Azure Monitor.",
+                  "Kusto Query Language (KQL) Queries: We developed and implemented KQL queries to filter and process the essential data from Azure Monitor alerts. These queries were instrumental in extracting the critical information needed for instant incident creation.",
+                  "Log Analytics: Log Analytics was employed to store and manage the telemetry data collected from our Azure resources. This centralized platform allowed us to effectively analyze and query data, ensuring accurate alert handling.",
+                  "Azure Monitor: Azure Monitor was at the core of our monitoring and alerting system for Azure resources. It autonomously generated alerts for various operational issues, serving as the foundation for the entire incident creation process."
                 ],
                 techStack: ["Logic App", "Kusto Query Language", "Log Analytics", "ServiceNow", "Azure Monitor"],
               }
@@ -430,10 +432,10 @@ const Portfolio = () => {
                 <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-4">
                   <Phone size={20} className="text-emerald-400" />
                 </div>
-                <span className="break-all">+91 123 456 7890</span>
+                <span className="break-all">+91 6372809100</span>
               </a>
               
-              <a href="mailto:arup.jyoti.hui@example.com" className="flex items-center text-lg text-gray-300 hover:text-emerald-400 transition-colors p-2 rounded-lg hover:bg-gray-700">
+              <a href="mailto:arupjyoti699@gmail.com" className="flex items-center text-lg text-gray-300 hover:text-emerald-400 transition-colors p-2 rounded-lg hover:bg-gray-700">
                 <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-4">
                   <Mail size={20} className="text-emerald-400" />
                 </div>
@@ -444,7 +446,7 @@ const Portfolio = () => {
                 <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-4">
                   <MapPin size={20} className="text-emerald-400" />
                 </div>
-                Kolkata, India
+                Odisha, India
               </div>
             </div>
 
@@ -472,7 +474,6 @@ const Portfolio = () => {
         {/* Footer */}
         <footer className="text-center text-gray-400 pb-8 pt-8">
           <p>© 2025 Arup Jyoti Hui. All rights reserved.</p>
-          <p className="mt-2">Built with React and Tailwind CSS</p>
         </footer>
       </main>
     </div>
