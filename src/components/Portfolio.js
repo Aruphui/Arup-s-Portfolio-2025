@@ -179,40 +179,51 @@ const Portfolio = () => {
           </p>
         </section>
 
-        {/* Experience Section */}
-        <section id="experience" className={`mb-16 transform transition-all duration-700 ${isVisible.experience ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <h3 className="text-3xl font-bold text-emerald-400 mb-6">Experience</h3>
-          <div className="space-y-8">
-            {[
-              {
-                title: "DevOps Engineer",
-                company: "Metlife LTD",
-                period: "Sep, 2024 — Present",
-                description: "As a DevOps Engineer, I have hands-on experience working with a wide range of technologies, including Terraform Cloud for infrastructure management and automation, Azure DevOps for continuous integration and continuous delivery (CI/CD) pipelines, and Azure Kubernetes Service (AKS) for container orchestration. I have managed AKS upgrades, ensuring the smooth operation of Kubernetes clusters while maintaining optimal performance and security. I have implemented Istio for service mesh management, optimizing microservices communication, monitoring, and security within AKS environments. My expertise extends to PowerShell scripting, where I have automated workflows and integrated various Azure services. Additionally, I have significant experience with Terraform for infrastructure as code, enabling the creation, management, and scaling of cloud resources efficiently. My work includes building and maintaining CI/CD pipelines, automating deployment processes, and ensuring streamlined operations across various cloud services. With a deep understanding of Azure IaaS, PaaS, and DevOps practices, I provide reliable and scalable solutions for cloud infrastructure and application management."
-              },
-              {
-                title: "DevOps Engineer",
-                company: "Coforge LTD",
-                period: "May, 2023 — Sep, 2024",
-                description: "A highly skilled Cloud & DevOps Engineer with extensive experience in designing and implementing CI/CD pipelines using Jenkins and Azure DevOps to streamline software development and optimize deployment workflows. Proficient in Infrastructure as Code (IaC) methodologies, particularly leveraging Terraform for efficient, consistent, and reproducible infrastructure provisioning. Demonstrates deep expertise in the Microsoft Azure cloud platform, with hands-on experience in managing a wide range of services including Virtual Machines, Azure Container Instances, Kubernetes Service, Docker, Azure App Service, and Logic Apps. Committed to integrating best CI/CD and DevOps practices, focusing on automating the entire application lifecycle, from building to testing and deployment. Additionally, exhibits advanced proficiency in AWS, Azure Infrastructure as a Service (IaaS), Azure Networking, implementation of conditional access policies, Azure Storage, policy deployment, Ansible, and Shell scripting, ensuring robust, scalable, and secure cloud solutions."
-              },
-              {
-                title: "Cloud & DevOps Engineer",
-                company: "Wipro",
-                period: "Nov, 2021 — May, 2023",
-                description: "Highly proficient in Azure DevOps practices with a comprehensive understanding of Infrastructure as a Service (IaaS) and Platform as a Service (PaaS). Expertise in cloud computing, Docker, Azure Kubernetes Service (AKS), Git, and various monitoring tools. Proven ability to identify and address security vulnerabilities to maintain robust security postures. Specialized in the development and deployment of serverless technologies, focusing on utilizing Logic Apps and Service Bus for efficient integration processes. Extensive experience in Azure networking, adept at configuring and managing Virtual Networks (Vnets), Load Balancers, Application Gateways, Traffic Managers, ExpressRoute, Network Security Groups (NSGs), Application Security Groups (ASGs), Route Tables, and Network Watcher to ensure optimal network performance and security. Skilled in leveraging Data Analytics to drive informed decision-making and improve operational efficiency. Demonstrated success in orchestrating migrations from on-premises and VMware environments to Azure, showcasing strong project management capabilities."
-              }
-            ].map((job, index) => (
-              <div key={index} className="group relative pl-8 border-l-2 border-gray-700 hover:border-emerald-400 transition-colors">
-                <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-gray-700 group-hover:bg-emerald-400 transition-colors" />
-                <h4 className="text-xl font-semibold mb-1">{job.title}</h4>
-                <h5 className="text-lg text-emerald-400 mb-1">{job.company}</h5>
-                <p className="text-gray-400 mb-4">{job.period}</p>
-                <p className="text-base">{job.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Experience Section - Modified for better mobile display */}
+<section 
+  id="experience" 
+  className={`mb-16 transform transition-all duration-700 ${
+    isVisible.experience ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+  }`}
+  style={{ minHeight: '50px' }} // Add min-height to ensure visibility
+>
+  <h3 className="text-3xl font-bold text-emerald-400 mb-6">Experience</h3>
+  <div className="space-y-8">
+    {[
+      {
+        title: "DevOps Engineer",
+        company: "Metlife LTD",
+        period: "Sep, 2024 — Present",
+        description: "As a DevOps Engineer, I have hands-on experience working with a wide range of technologies, including Terraform Cloud for infrastructure management and automation, Azure DevOps for continuous integration and continuous delivery (CI/CD) pipelines, and Azure Kubernetes Service (AKS) for container orchestration. I have managed AKS upgrades, ensuring the smooth operation of Kubernetes clusters while maintaining optimal performance and security. I have implemented Istio for service mesh management, optimizing microservices communication, monitoring, and security within AKS environments. My expertise extends to PowerShell scripting, where I have automated workflows and integrated various Azure services. Additionally, I have significant experience with Terraform for infrastructure as code, enabling the creation, management, and scaling of cloud resources efficiently. My work includes building and maintaining CI/CD pipelines, automating deployment processes, and ensuring streamlined operations across various cloud services. With a deep understanding of Azure IaaS, PaaS, and DevOps practices, I provide reliable and scalable solutions for cloud infrastructure and application management."
+      },
+      {
+        title: "DevOps Engineer",
+        company: "Coforge LTD",
+        period: "May, 2023 — Sep, 2024",
+        description: "A highly skilled Cloud & DevOps Engineer with extensive experience in designing and implementing CI/CD pipelines using Jenkins and Azure DevOps to streamline software development and optimize deployment workflows. Proficient in Infrastructure as Code (IaC) methodologies, particularly leveraging Terraform for efficient, consistent, and reproducible infrastructure provisioning. Demonstrates deep expertise in the Microsoft Azure cloud platform, with hands-on experience in managing a wide range of services including Virtual Machines, Azure Container Instances, Kubernetes Service, Docker, Azure App Service, and Logic Apps. Committed to integrating best CI/CD and DevOps practices, focusing on automating the entire application lifecycle, from building to testing and deployment. Additionally, exhibits advanced proficiency in AWS, Azure Infrastructure as a Service (IaaS), Azure Networking, implementation of conditional access policies, Azure Storage, policy deployment, Ansible, and Shell scripting, ensuring robust, scalable, and secure cloud solutions."
+      },
+      {
+        title: "Cloud & DevOps Engineer",
+        company: "Wipro",
+        period: "Nov, 2021 — May, 2023",
+        description: "Highly proficient in Azure DevOps practices with a comprehensive understanding of Infrastructure as a Service (IaaS) and Platform as a Service (PaaS). Expertise in cloud computing, Docker, Azure Kubernetes Service (AKS), Git, and various monitoring tools. Proven ability to identify and address security vulnerabilities to maintain robust security postures. Specialized in the development and deployment of serverless technologies, focusing on utilizing Logic Apps and Service Bus for efficient integration processes. Extensive experience in Azure networking, adept at configuring and managing Virtual Networks (Vnets), Load Balancers, Application Gateways, Traffic Managers, ExpressRoute, Network Security Groups (NSGs), Application Security Groups (ASGs), Route Tables, and Network Watcher to ensure optimal network performance and security. Skilled in leveraging Data Analytics to drive informed decision-making and improve operational efficiency. Demonstrated success in orchestrating migrations from on-premises and VMware environments to Azure, showcasing strong project management capabilities."
+      }
+    ].map((job, index) => (
+      <div 
+        key={index} 
+        className="group relative pl-8 border-l-2 border-gray-700 hover:border-emerald-400 transition-colors"
+      >
+        <div 
+          className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-gray-700 group-hover:bg-emerald-400 transition-colors" 
+        />
+        <h4 className="text-xl font-semibold mb-1">{job.title}</h4>
+        <h5 className="text-lg text-emerald-400 mb-1">{job.company}</h5>
+        <p className="text-gray-400 mb-4">{job.period}</p>
+        <p className="text-base md:text-base" style={{ wordBreak: 'break-word' }}>{job.description}</p>
+      </div>
+    ))}
+  </div>
+</section>
 
         {/* Skills Section */}
         <section id="skills" className={`mb-16 transform transition-all duration-700 ${isVisible.skills ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
