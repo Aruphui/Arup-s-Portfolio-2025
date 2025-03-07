@@ -362,7 +362,7 @@ const Portfolio = () => {
             {[
               {
                 title: "Microsoft Certified: DevOps Engineer Expert",
-                description: "This certification demonstrates the ability to design and implement DevOps practices using Azure technologies.",
+                description: "This certification demonstrates the ability to design and implement DevOps practices using Azure technologies. It validates skills in areas such as continuous integration, continuous delivery, infrastructure as code, configuration management, monitoring, and security within the Azure platform.",
                 issuedBy: "Microsoft",
                 link: "https://learn.microsoft.com/api/credentials/share/en-in/ArupJyotiHui-6587/24E60965F5A73B39?sharingId=CBE802B28DEFAD0"
               },
@@ -374,9 +374,21 @@ const Portfolio = () => {
               },
               {
                 title: "Microsoft Certified: Azure Network Engineer Associate",
-                description: "This certification validates the skills required to implement and manage Azure networking solutions.",
+                description: "This certification validates the skills required to implement and manage Azure networking solutions. It covers topics like virtual networks, network security, load balancing, VPNs, and managing network traffic in Azure, ensuring high availability and security in cloud-based environments.",
                 issuedBy: "Microsoft",
                 link: "https://learn.microsoft.com/api/credentials/share/en-us/ArupJyotiHui-6587/1B13A26007F9093A?sharingId"
+              },
+              {
+                title: "Microsoft Certified: Azure Solutions Architect Expert",
+                description: "This certification is designed for professionals who design cloud and hybrid solutions on Azure. It assesses the ability to design and implement complex Azure solutions, covering areas such as infrastructure, security, data solutions, and monitoring, to ensure scalability, reliability, and security in enterprise applications.",
+                issuedBy: "Microsoft",
+                link: "https://learn.microsoft.com/api/credentials/share/en-us/ArupJyotiHui-6587/F80853163F5A0859?sharingId"
+              },
+              {
+                title: "Microsoft Certified: Azure Administrator Associate",
+                description: "This certification validates the skills required to manage Azure subscriptions, implement storage solutions, configure virtual networks, manage Azure identities and governance, monitor resources, and manage Azure security. It demonstrates the ability to manage and support cloud infrastructure, ensuring efficient and effective use of Azure services in an enterprise environment.",
+                issuedBy: "Microsoft",
+                link: "https://learn.microsoft.com/api/credentials/share/en-us/ArupJyotiHui-6587/3F84C2AD81FAF448?sharingId"
               }
             ].map((certification, index) => (
               <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-lg transition-all duration-300 hover:transform hover:scale-105 active:scale-105 relative overflow-hidden group">
@@ -432,7 +444,7 @@ const Portfolio = () => {
             <p className="text-lg mb-6">Get in touch with me!</p>
             
             <div className="space-y-4">
-              <a href="tel:+911234567890" className="flex items-center text-lg text-gray-300 hover:text-emerald-400 transition-colors p-2 rounded-lg hover:bg-gray-700">
+              <a href="tel:+916372809100" className="flex items-center text-lg text-gray-300 hover:text-emerald-400 transition-colors p-2 rounded-lg hover:bg-gray-700">
                 <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-4">
                   <Phone size={20} className="text-emerald-400" />
                 </div>
@@ -443,7 +455,7 @@ const Portfolio = () => {
                 <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-4">
                   <Mail size={20} className="text-emerald-400" />
                 </div>
-                <span className="break-all">arup.jyoti.hui@example.com</span>
+                <span className="break-all">arupjyoti699@gmail.com</span>
               </a>
               
               <div className="flex items-center text-lg text-gray-300 p-2 rounded-lg">
