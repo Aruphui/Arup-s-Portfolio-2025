@@ -251,13 +251,13 @@ const Portfolio = () => {
                 title: "DevOps Engineer",
                 company: "Coforge LTD",
                 period: "May, 2023 — Sep, 2024",
-                description: "A highly skilled Cloud & DevOps Engineer with extensive experience in designing and implementing CI/CD pipelines using Jenkins and Azure DevOps to streamline software development and optimize deployment workflows. Proficient in Infrastructure as Code (IaC) methodologies, particularly leveraging Terraform for efficient, consistent, and reproducible infrastructure provisioning. Demonstrates deep expertise in the Microsoft Azure cloud platform, with hands-on experience in managing a wide range of services. My expertise extends to PowerShell scripting, where I have automated workflows and integrated various Azure services. Additionally, I have significant experience with Terraform for infrastructure as code, enabling the creation, management, and scaling of cloud resources efficiently. My work includes building and maintaining CI/CD pipelines, automating deployment processes, and ensuring streamlined operations across various cloud services. With a deep understanding of Azure IaaS, PaaS, and DevOps practices, I provide reliable and scalable solutions for cloud infrastructure and application management."
+                description: "A highly skilled Cloud & DevOps Engineer with extensive experience in designing and implementing CI/CD pipelines using Jenkins and Azure DevOps to streamline software development and optimize deployment workflows. Proficient in Infrastructure as Code (IaC) methodologies, particularly leveraging Terraform for efficient, consistent, and reproducible infrastructure provisioning. Demonstrates deep expertise in the Microsoft Azure cloud platform, with hands-on experience in managing a wide range of services including Virtual Machines, Azure Container Instances, Kubernetes Service, Docker, Azure App Service, and Logic Apps. Committed to integrating best CI/CD and DevOps practices, focusing on automating the entire application lifecycle, from building to testing and deployment. Additionally, exhibits advanced proficiency in AWS, Azure Infrastructure as a Service (IaaS), Azure Networking, implementation of conditional access policies, Azure Storage, policy deployment, Ansible, and Shell scripting, ensuring robust, scalable, and secure cloud solutions."
               },
               {
                 title: "Cloud & DevOps Engineer",
                 company: "Wipro",
                 period: "Nov, 2021 — May, 2023",
-                description: "Highly proficient in Azure DevOps practices with a comprehensive understanding of Infrastructure as a Service (IaaS) and Platform as a Service (PaaS). Expertise in cloud computing, Docker, Azure Kubernetes Service (AKS), Git, and various monitoring tools. Proven ability to identify and address security vulnerabilities to maintain robust security postures. Specialized in the development and deployment of serverless technologies, focusing on utilizing Logic Apps and Service Bus for efficient integration processes. My expertise extends to PowerShell scripting, where I have automated workflows and integrated various Azure services. Additionally, I have significant experience with Terraform for infrastructure as code, enabling the creation, management, and scaling of cloud resources efficiently. My work includes building and maintaining CI/CD pipelines, automating deployment processes, and ensuring streamlined operations across various cloud services. With a deep understanding of Azure IaaS, PaaS, and DevOps practices, I provide reliable and scalable solutions for cloud infrastructure and application management."
+                description: "Highly proficient in Azure DevOps practices with a comprehensive understanding of Infrastructure as a Service (IaaS) and Platform as a Service (PaaS). Expertise in cloud computing, Docker, Azure Kubernetes Service (AKS), Git, and various monitoring tools. Proven ability to identify and address security vulnerabilities to maintain robust security postures. Specialized in the development and deployment of serverless technologies, focusing on utilizing Logic Apps and Service Bus for efficient integration processes. Extensive experience in Azure networking, adept at configuring and managing Virtual Networks (Vnets), Load Balancers, Application Gateways, Traffic Managers, ExpressRoute, Network Security Groups (NSGs), Application Security Groups (ASGs), Route Tables, and Network Watcher to ensure optimal network performance and security. Skilled in leveraging Data Analytics to drive informed decision-making and improve operational efficiency. Demonstrated success in orchestrating migrations from on-premises and VMware environments to Azure, showcasing strong project management capabilities."
               }
             ].map((job, index) => (
               <div key={index} className="group relative pl-8 border-l-2 border-gray-700 hover:border-emerald-400 transition-colors">
@@ -294,26 +294,30 @@ const Portfolio = () => {
             {[
               {
                 title: "Microservices Deployment on Azure",
-                description: "Deployed a scalable and resilient microservices-based application on the Azure Cloud platform, leveraging Azure DevOps for CI/CD, Terraform for IaC, Kubernetes for orchestration, and Docker for containerization.",
+                description: "Deployed a scalable and resilient microservices-based application on the Azure Cloud platform, leveraging Azure DevOps for CI/CD, Terraform for IaC, Kubernetes for orchestration, and Docker for containerization. The goal was to automate the entire software development lifecycle, ensuring high availability and seamless scaling to meet demand",
                 details: [
-                  "CI/CD Pipeline Creation: Designed and implemented robust CI/CD pipelines using Azure DevOps, automating the build, test, and deployment processes.",
-                  "Infrastructure as Code (IaC): Utilized Terraform to codify the infrastructure setup for the Kubernetes clusters.",
-                  "Kubernetes Orchestration: Deployed and managed the Kubernetes clusters with health checks and auto-scaling policies."
+                  "CI/CD Pipeline Creation: Designed and implemented robust CI/CD pipelines using Azure DevOps, automating the build, test, and deployment processes. Configured build triggers for automated pipeline execution on code commits, ensuring rapid feedback and reduced time to market.",
+                  "Infrastructure as Code (IaC): Utilized Terraform to codify the infrastructure setup for the Kubernetes clusters, including network configurations, VMs, and load balancers. This approach facilitated reproducible and scalable infrastructure provisioning, reducing manual errors and ensuring consistency across environments.",
+                  "Kubernetes Orchestration: Deployed and managed the Kubernetes clusters, defining deployments, services, and ingress controllers to ensure high availability and load balancing of the microservices. Implemented health checks and auto-scaling policies to maintain optimal performance under varying loads.",
+                  "Containerization with Docker: Containerized the microservices using Docker, optimizing the container images for size and speed to enhance the deployment efficiency and reduce the attack surface.",
+                  "Monitoring and Logging: Integrated monitoring and logging solutions to track the health and performance of the microservices and the underlying infrastructure. Configured alerts based on key metrics and logs to proactively address issues and minimize downtime."
                 ],
                 techStack: ["Terraform", "Azure DevOps", "Kubernetes", "Docker", "Azure Monitor"],
               },
               {
-                title: "AzureOps: Automated Resource Provisioning",
-                description: "Automated the deployment of Azure resources and streamlined day-to-day operations through infrastructure as code and CI/CD pipelines.",
+                title: "AzureOps: Automated Resource Provisioning and Operations",
+                description: "This project aimed to automate the deployment of Azure resources and streamline day-to-day operations. Key components of the project include",
                 details: [
-                  "Terraform (IaC): Defined Azure resources as code, facilitating version control and consistency.",
-                  "Azure DevOps CI/CD Pipeline: Created automated resource provisioning with stages for build, test, and deployment.",
-                  "Azure Automation Runbooks: Developed runbooks to automate daily operational tasks."
+                  "Terraform (Infrastructure as Code): Utilized Terraform to define Azure resources (e.g., virtual machines, databases) as code. This approach facilitates version control, resource replication, and ensures consistent configuration across environments.",
+                  "Azure DevOps CI/CD Pipeline: Used Azure DevOps to create a Continuous Integration and Continuous Deployment pipeline, enabling automated resource provisioning with stages for build, test, and deployment. It promotes consistency and one-click provisioning of resources.",
+                  "Azure Automation Runbooks: Developed Azure Automation runbooks to automate daily operational tasks such as backup, scaling, and monitoring. These runbooks help reduce manual intervention and improve operational efficiency.",
+                  "GitHub Actions: Integrated GitHub Actions to automate workflows like code validation, testing, and deployment. This integration helps in ensuring faster, reliable deployments while promoting efficient collaboration among team members.",
+                  "Ansible Automation: Leveraged Ansible for configuration management and infrastructure orchestration. Ansible facilitated software deployment, enabling consistent and reliable operations across the infrastructure."
                 ],
                 techStack: ["Terraform", "Azure DevOps", "Azure Automation", "GitHub Actions", "Ansible"],
               },
               {
-                title: "Azure Monitor and ServiceNow Integration",
+                title: "Azure Monitor and ServiceNow Event Management",
                 description: "As a crucial part of our project, we successfully integrated Azure Monitor with ServiceNow Event Management to automate incident creation in response to Azure alerts. This integration not only streamlined our operational processes but also significantly improved incident tracking and management.",
                 details: [
                   "ServiceNow Event Management: The ServiceNow Event Management tool played a pivotal role in the automation of incident generation. It seamlessly received, processed, and managed incidents based on the alerts received from Azure Monitor.",
