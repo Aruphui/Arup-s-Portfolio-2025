@@ -575,7 +575,7 @@ const Portfolio = () => {
                     </div>
                     <div>
                       <p className="text-gray-400">Location</p>
-                      <p className={`${colors.primary}`}>Hyderabad, India</p>
+                      <p className={`${colors.primary}`}>Odisha, India</p>
                     </div>
                   </div>
                 </div>
