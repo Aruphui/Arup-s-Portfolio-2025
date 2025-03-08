@@ -361,7 +361,7 @@ const Portfolio = () => {
           <h3 className={`text-3xl font-bold mb-6 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} bg-clip-text text-transparent`}>Skills</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {[
-              "Azure", "AWS", "Docker", "Kubernetes", "Terraform", "Azure DevOps",
+              "Azure", "AWS", "Docker", "Kubernetes", "Terraform", "Azure DevOps", "Gitlab",
               "CI/CD Pipelines", "Git", "Jenkins", "Infrastructure as Code (IaC)",
               "Monitoring and Logging", "Shell Scripting", "Ansible", "Networking", "Linux"
             ].map((skill, index) => (
@@ -521,10 +521,16 @@ const Portfolio = () => {
           <div className="space-y-8">
             {[
               {
-                degree: "Bachelor of Technology in Computer Science",
-                institution: "KIIT University, Bhubaneswar",
-                period: "2017 — 2021",
-                description: "Graduated with honors, focusing on cloud computing, distributed systems, and software engineering. Completed coursework in algorithms, data structures, database management, and network security."
+                degree: "Bachelor of Computer Applications",
+                institution: "Fakir Mohan University, Baleswar",
+                period: "2018 — 2021",
+                
+              }
+              {
+                degree: "Master of Computer Applications",
+                institution: "Chandigarh University, Chandigarh",
+                period: "2023 — 2025",
+                
               }
             ].map((edu, index) => (
               <div key={index} className={`group ${colors.cardBg} p-6 rounded-lg shadow-lg transition-all duration-300 border border-opacity-30 ${colors.border} hover:border-indigo-400 backdrop-blur-sm`}>
@@ -551,7 +557,7 @@ const Portfolio = () => {
                     </div>
                     <div>
                       <p className="text-gray-400">Email</p>
-                      <a href="mailto:aruphui@gmail.com" className={`${colors.primary} hover:underline`}>aruphui@gmail.com</a>
+                      <a href="mailto:arupjyoti699@gmail.com" className={`${colors.primary} hover:underline`}>arupjyoti699@gmail.com</a>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
@@ -560,7 +566,7 @@ const Portfolio = () => {
                     </div>
                     <div>
                       <p className="text-gray-400">Phone</p>
-                      <a href="tel:+919439339834" className={`${colors.primary} hover:underline`}>+91 94393 39834</a>
+                      <a href="tel:+916372809100" className={`${colors.primary} hover:underline`}>+91 6372809100</a>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
