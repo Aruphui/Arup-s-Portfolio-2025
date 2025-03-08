@@ -7,7 +7,8 @@ const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('about');
   const [isVisible, setIsVisible] = useState({});
   const [isMobile, setIsMobile] = useState(false);
-
+  const [scrollProgress, setScrollProgress] = useState(0);
+  
   // Check screen size and update isMobile state
   useEffect(() => {
     const checkMobile = () => {
@@ -22,6 +23,18 @@ const Portfolio = () => {
     
     // Cleanup
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Track scroll progress for progress bar
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const currentProgress = (window.scrollY / totalScroll) * 100;
+      setScrollProgress(currentProgress);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Enhanced intersection observer for better cross-device behavior
@@ -115,12 +128,84 @@ const Portfolio = () => {
     }, isMobile ? 300 : 0);
   };
 
+  // Get colors based on theme
+  const getThemeColors = () => {
+    if (theme === 'dark') {
+      return {
+        bg: 'bg-gray-900',
+        text: 'text-gray-100',
+        primary: 'text-indigo-400',
+        primaryHover: 'hover:text-indigo-300',
+        primaryBg: 'bg-indigo-500',
+        primaryBgHover: 'hover:bg-indigo-600',
+        accent: 'text-rose-400',
+        accentBg: 'bg-rose-500',
+        accentBgHover: 'hover:bg-rose-600',
+        secondary: 'text-teal-400',
+        secondaryBg: 'bg-teal-500',
+        secondaryBgHover: 'hover:bg-teal-600',
+        sidebarBg: 'bg-gray-800',
+        cardBg: 'bg-gray-800',
+        cardBgHover: 'hover:bg-gray-700',
+        skillBg: 'bg-gray-800/80',
+        skillBgHover: 'hover:bg-gray-700',
+        border: 'border-gray-700',
+        menuButton: 'bg-indigo-600',
+        buttonText: 'text-white',
+        gradientFrom: 'from-indigo-600',
+        gradientTo: 'to-rose-500',
+      };
+    } else {
+      return {
+        bg: 'bg-gray-50',
+        text: 'text-gray-900',
+        primary: 'text-indigo-600',
+        primaryHover: 'hover:text-indigo-800',
+        primaryBg: 'bg-indigo-600',
+        primaryBgHover: 'hover:bg-indigo-700',
+        accent: 'text-rose-500',
+        accentBg: 'bg-rose-500',
+        accentBgHover: 'hover:bg-rose-600',
+        secondary: 'text-teal-600',
+        secondaryBg: 'bg-teal-600',
+        secondaryBgHover: 'hover:bg-teal-700',
+        sidebarBg: 'bg-white',
+        cardBg: 'bg-white',
+        cardBgHover: 'hover:bg-gray-100',
+        skillBg: 'bg-white',
+        skillBgHover: 'hover:bg-gray-100',
+        border: 'border-gray-200',
+        menuButton: 'bg-indigo-600',
+        buttonText: 'text-white',
+        gradientFrom: 'from-indigo-600',
+        gradientTo: 'to-rose-500',
+      };
+    }
+  };
+
+  const colors = getThemeColors();
+
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
+    <div className={`min-h-screen ${colors.bg} ${colors.text} transition-colors duration-300 relative`}>
+      {/* Progress bar */}
+      <div 
+        className={`fixed top-0 left-0 h-1 z-50 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo}`}
+        style={{ width: `${scrollProgress}%` }}
+      />
+
+      {/* Back to top button */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className={`fixed bottom-4 right-4 p-3 rounded-full ${colors.primaryBg} ${colors.buttonText} z-40 shadow-lg transform transition-transform duration-300 ${scrollProgress > 20 ? 'scale-100' : 'scale-0'}`}
+        aria-label="Back to top"
+      >
+        <ChevronRight size={24} className="transform rotate-270" />
+      </button>
+
       {/* Improved overlay for mobile menu */}
       {isMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-70 z-40 md:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-black bg-opacity-70 z-40 md:hidden transition-opacity duration-300 backdrop-blur-sm"
           onClick={() => setIsMenuOpen(false)}
         />
       )}
@@ -128,7 +213,7 @@ const Portfolio = () => {
       {/* Enhanced Mobile Menu Button */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="fixed top-4 right-4 p-2 rounded-full bg-gray-800 text-white md:hidden z-50 menu-toggle"
+        className={`fixed top-4 right-4 p-2 rounded-full ${colors.menuButton} ${colors.buttonText} md:hidden z-50 menu-toggle shadow-lg`}
         aria-label="Toggle menu"
       >
         <Menu size={24} />
@@ -137,15 +222,15 @@ const Portfolio = () => {
       {/* Theme Toggle */}
       <button
         onClick={toggleTheme}
-        className="fixed top-4 right-16 p-2 rounded-full bg-gray-800 text-white z-50"
+        className={`fixed top-4 right-16 p-2 rounded-full ${colors.menuButton} ${colors.buttonText} z-50 shadow-lg`}
         aria-label="Toggle theme"
       >
         {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
       </button>
 
-      {/* Improved Sidebar/Mobile Menu */}
+      {/* Improved Sidebar/Mobile Menu with Glass effect */}
       <aside
-        className={`fixed top-0 h-full bg-gray-800 transition-all duration-300 ease-in-out z-40 overflow-y-auto
+        className={`fixed top-0 h-full ${colors.sidebarBg} backdrop-blur-md bg-opacity-90 transition-all duration-300 ease-in-out z-40 overflow-y-auto border-r ${colors.border}
         ${isMobile 
           ? `left-0 w-full ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`
           : `left-0 w-64 translate-x-0`
@@ -153,7 +238,7 @@ const Portfolio = () => {
       >
         <div className="h-full flex flex-col justify-between p-6">
           <div>
-            <h1 className="text-2xl font-bold text-emerald-400 mb-2">Arup Jyoti Hui</h1>
+            <h1 className={`text-2xl font-bold ${colors.primary} mb-2`}>Arup Jyoti Hui</h1>
             <h2 className="text-gray-400 mb-8">DevOps Engineer</h2>
             <nav>
               <ul className="space-y-4">
@@ -161,8 +246,8 @@ const Portfolio = () => {
                   <li key={section}>
                     <a
                       href={`#${section}`}
-                      className={`group flex items-center space-x-2 text-gray-300 hover:text-emerald-400 transition-colors py-2 ${
-                        activeSection === section ? 'text-emerald-400' : ''
+                      className={`group flex items-center space-x-2 text-gray-300 ${colors.primaryHover} transition-colors py-2 ${
+                        activeSection === section ? colors.primary : ''
                       }`}
                       onClick={(e) => {
                         e.preventDefault();
@@ -188,7 +273,7 @@ const Portfolio = () => {
                 href="https://www.linkedin.com/in/aruphui"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-emerald-400 flex items-center"
+                className={`text-gray-400 ${colors.primaryHover} flex items-center`}
                 aria-label="LinkedIn Profile"
               >
                 <Linkedin size={20} />
@@ -197,7 +282,7 @@ const Portfolio = () => {
                 href="https://github.com/aruphui"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-emerald-400 flex items-center"
+                className={`text-gray-400 ${colors.primaryHover} flex items-center`}
                 aria-label="GitHub Profile"
               >
                 <Github size={20} />
@@ -206,7 +291,7 @@ const Portfolio = () => {
                 href="https://twitter.com/arup_hui"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-emerald-400 flex items-center"
+                className={`text-gray-400 ${colors.primaryHover} flex items-center`}
                 aria-label="Twitter Profile"
               >
                 <Twitter size={20} />
@@ -215,7 +300,7 @@ const Portfolio = () => {
                 href="https://instagram.com/arup.hui"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-emerald-400 flex items-center"
+                className={`text-gray-400 ${colors.primaryHover} flex items-center`}
                 aria-label="Instagram Profile"
               >
                 <Instagram size={20} />
@@ -228,9 +313,9 @@ const Portfolio = () => {
 
       {/* Improved Main Content with better mobile support */}
       <main className={`transition-all duration-300 ${isMobile ? 'px-4 py-16' : 'md:ml-64 p-6 md:p-12'}`}>
-        {/* About Section */}
+        {/* About Section with gradient text */}
         <section id="about" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.about ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <h3 className="text-3xl font-bold text-emerald-400 mb-6">About</h3>
+          <h3 className={`text-3xl font-bold mb-6 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} bg-clip-text text-transparent`}>About</h3>
           <p className="text-lg leading-relaxed">
           Results-driven Cloud & DevOps Engineer with extensive experience in managing cloud infrastructure, implementing CI/CD pipelines, and utilizing Infrastructure as Code (IaC). Skilled in container orchestration and automation, with proficiency in a wide range of tools and technologies including Docker, Kubernetes, Terraform, Azure DevOps, Jenkins, Git, and Shell Scripting. Expertise in Azure IaaS & PaaS, Azure Networking, AWS, Ansible, and Linux. Adept at optimizing deployment procedures, enhancing system reliability, and driving organizational efficiency.
           </p>
@@ -238,7 +323,7 @@ const Portfolio = () => {
 
         {/* Experience Section - Modified to show all content */}
         <section id="experience" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.experience ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <h3 className="text-3xl font-bold text-emerald-400 mb-6">Experience</h3>
+          <h3 className={`text-3xl font-bold mb-6 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} bg-clip-text text-transparent`}>Experience</h3>
           <div className="space-y-8">
             {[
               {
@@ -260,10 +345,10 @@ const Portfolio = () => {
                 description: "Highly proficient in Azure DevOps practices with a comprehensive understanding of Infrastructure as a Service (IaaS) and Platform as a Service (PaaS). Expertise in cloud computing, Docker, Azure Kubernetes Service (AKS), Git, and various monitoring tools. Proven ability to identify and address security vulnerabilities to maintain robust security postures. Specialized in the development and deployment of serverless technologies, focusing on utilizing Logic Apps and Service Bus for efficient integration processes. Extensive experience in Azure networking, adept at configuring and managing Virtual Networks (Vnets), Load Balancers, Application Gateways, Traffic Managers, ExpressRoute, Network Security Groups (NSGs), Application Security Groups (ASGs), Route Tables, and Network Watcher to ensure optimal network performance and security. Skilled in leveraging Data Analytics to drive informed decision-making and improve operational efficiency. Demonstrated success in orchestrating migrations from on-premises and VMware environments to Azure, showcasing strong project management capabilities."
               }
             ].map((job, index) => (
-              <div key={index} className="group relative pl-8 border-l-2 border-gray-700 hover:border-emerald-400 transition-colors">
-                <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-gray-700 group-hover:bg-emerald-400 transition-colors" />
+              <div key={index} className={`group relative pl-8 border-l-2 border-gray-700 hover:border-indigo-400 transition-colors pb-6 ${index !== 2 ? 'border-dashed' : ''}`}>
+                <div className={`absolute -left-2 top-0 w-4 h-4 rounded-full bg-gray-700 group-hover:${colors.primaryBg.replace('bg-', '')} transition-colors`} />
                 <h4 className="text-xl font-semibold mb-1">{job.title}</h4>
-                <h5 className="text-lg text-emerald-400 mb-1">{job.company}</h5>
+                <h5 className={`text-lg ${colors.primary} mb-1`}>{job.company}</h5>
                 <p className="text-gray-400 mb-4">{job.period}</p>
                 <p className="text-base" style={{ wordBreak: 'break-word' }}>{job.description}</p>
               </div>
@@ -271,25 +356,29 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* Skills Section */}
+        {/* Skills Section with improved animation */}
         <section id="skills" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.skills ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <h3 className="text-3xl font-bold text-emerald-400 mb-6">Skills</h3>
+          <h3 className={`text-3xl font-bold mb-6 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} bg-clip-text text-transparent`}>Skills</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {[
               "Azure", "AWS", "Docker", "Kubernetes", "Terraform", "Azure DevOps",
               "CI/CD Pipelines", "Git", "Jenkins", "Infrastructure as Code (IaC)",
               "Monitoring and Logging", "Shell Scripting", "Ansible", "Networking", "Linux"
             ].map((skill, index) => (
-              <div key={index} className="p-4 rounded-lg bg-gray-800 hover:bg-gray-700 active:bg-gray-700 transition-all duration-300 text-center">
+              <div 
+                key={index} 
+                className={`p-4 rounded-lg ${colors.skillBg} ${colors.skillBgHover} transition-all duration-300 text-center backdrop-blur-sm transform hover:scale-105 shadow-md border border-opacity-20 ${colors.border}`}
+                style={{ transitionDelay: `${index * 50}ms` }}
+              >
                 {skill}
               </div>
             ))}
           </div>
         </section>
 
-        {/* Projects Section - Modified to show all content by default */}
+        {/* Projects Section - Modified with card hover effects */}
         <section id="projects" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.projects ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <h3 className="text-3xl font-bold text-emerald-400 mb-6">Projects</h3>
+          <h3 className={`text-3xl font-bold mb-6 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} bg-clip-text text-transparent`}>Projects</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
@@ -329,23 +418,31 @@ const Portfolio = () => {
                 techStack: ["Logic App", "Kusto Query Language", "Log Analytics", "ServiceNow", "Azure Monitor"],
               }
             ].map((project, index) => (
-              <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-lg transition-all duration-300 hover:transform hover:scale-105 active:scale-105">
-                <h4 className="text-2xl font-semibold text-emerald-400 mb-4">{project.title}</h4>
+              <div 
+                key={index} 
+                className={`${colors.cardBg} p-6 rounded-lg shadow-lg transition-all duration-500 group hover:transform hover:translate-y-[-10px] active:translate-y-[-10px] backdrop-blur-sm border border-opacity-30 ${colors.border}`}
+              >
+                <div className="h-2 w-full bg-gradient-to-r from-indigo-500 to-rose-500 rounded-t-lg mb-4 absolute top-0 left-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"/>
+                
+                <h4 className={`text-2xl font-semibold ${colors.primary} mb-4 group-hover:translate-x-2 transition-transform duration-300`}>{project.title}</h4>
                 <p className="text-gray-300 mb-4">{project.description}</p>
                 
-                {/* Project details shown by default */}
-                <div className="mb-4">
-                  <h5 className="text-emerald-400 font-medium mb-2">Details</h5>
-                  <ul className="list-disc pl-5 space-y-2">
+                {/* Project details with improved styling */}
+                <div className="mb-4 overflow-hidden">
+                  <h5 className={`${colors.secondary} font-medium mb-2`}>Details</h5>
+                  <ul className="list-none pl-0 space-y-2">
                     {project.details.map((detail, i) => (
-                      <li key={i} className="text-gray-300">{detail}</li>
+                      <li key={i} className="text-gray-300 pl-4 border-l-2 border-indigo-400 hover:border-rose-400 transition-colors">{detail}</li>
                     ))}
                   </ul>
                 </div>
                 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.techStack.map((tech, tIndex) => (
-                    <span key={tIndex} className="text-sm text-gray-400 bg-gray-700 rounded-full py-1 px-3">
+                    <span 
+                      key={tIndex} 
+                      className={`text-sm text-gray-200 bg-opacity-30 ${colors.primaryBg} rounded-full py-1 px-3 transition-all duration-300 hover:bg-opacity-50`}
+                    >
                       {tech}
                     </span>
                   ))}
@@ -355,9 +452,9 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* Certifications Section */}
+        {/* Certifications Section with improved card design */}
         <section id="certifications" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.certifications ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <h3 className="text-3xl font-bold text-emerald-400 mb-6">Certifications</h3>
+          <h3 className={`text-3xl font-bold mb-6 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} bg-clip-text text-transparent`}>Certifications</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
@@ -391,19 +488,27 @@ const Portfolio = () => {
                 link: "https://learn.microsoft.com/api/credentials/share/en-us/ArupJyotiHui-6587/3F84C2AD81FAF448?sharingId"
               }
             ].map((certification, index) => (
-              <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-lg transition-all duration-300 hover:transform hover:scale-105 active:scale-105 relative overflow-hidden group">
-                {/* Badge overlay - visible by default on mobile */}
-                <div className="absolute top-2 right-2 rounded-full bg-emerald-500 text-white p-2 opacity-100 transition-all duration-300">
-                  <ExternalLink size={16} />
-                </div>
+              <div 
+                key={index} 
+                className={`${colors.cardBg} p-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-105 relative overflow-hidden group border border-opacity-30 ${colors.border} backdrop-blur-sm`}
+              >
+                {/* Gradient overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 
-                <h4 className="text-2xl font-semibold text-emerald-400 mb-4">{certification.title}</h4>
-                <p className="text-gray-300 mb-4">{certification.description}</p>
-                <div className="text-gray-400 mb-4">
-                  Issued by: <span className="font-semibold">{certification.issuedBy}</span>
-                </div>
-                <a href={certification.link} target="_blank" rel="noopener noreferrer" className="inline-block bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded px-4 py-2 transition-colors">
-                  View Certification
+                {/* Badge overlay with animation */}
+                <div className="absolute -right-16 -top-16 w-32 h-32 bg-indigo-600/20 rounded-full transform rotate-45 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none" />
+                
+                <h4 className={`text-xl font-semibold ${colors.primary} mb-2 relative z-10`}>{certification.title}</h4>
+                <p className="text-gray-400 mb-4 relative z-10">Issued by {certification.issuedBy}</p>
+                <p className="text-gray-300 mb-4 relative z-10">{certification.description}</p>
+                <a 
+                  href={certification.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center space-x-2 ${colors.primary} hover:underline transition-all group-hover:translate-x-1 duration-300 relative z-10`}
+                >
+                  <span>View Certificate</span>
+                  <ExternalLink size={16} />
                 </a>
               </div>
             ))}
@@ -412,26 +517,21 @@ const Portfolio = () => {
 
         {/* Education Section */}
         <section id="education" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.education ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <h3 className="text-3xl font-bold text-emerald-400 mb-6">Education</h3>
-          <div className="space-y-6">
+          <h3 className={`text-3xl font-bold mb-6 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} bg-clip-text text-transparent`}>Education</h3>
+          <div className="space-y-8">
             {[
               {
-                degree: "Master's Degree in Computer Application (MCA)",
-                university: "Chandigarh University",
-                location: "Chandigarh, Punjab",
-                period: "2023 — 2025"
-              },
-              {
-                degree: "Bachelor's Degree in Computer Application (BCA)",
-                university: "F.M University",
-                location: "Baleswar, Odisha",
-                period: "2018 — 2021"
+                degree: "Bachelor of Technology in Computer Science",
+                institution: "KIIT University, Bhubaneswar",
+                period: "2017 — 2021",
+                description: "Graduated with honors, focusing on cloud computing, distributed systems, and software engineering. Completed coursework in algorithms, data structures, database management, and network security."
               }
             ].map((edu, index) => (
-              <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-lg transition-all duration-300">
-                <h4 className="text-xl font-semibold mb-2">{edu.degree}</h4>
-                <p className="text-emerald-400 mb-1">{edu.university}</p>
-                <p className="text-gray-400">{edu.location} | {edu.period}</p>
+              <div key={index} className={`group ${colors.cardBg} p-6 rounded-lg shadow-lg transition-all duration-300 border border-opacity-30 ${colors.border} hover:border-indigo-400 backdrop-blur-sm`}>
+                <h4 className="text-xl font-semibold mb-1">{edu.degree}</h4>
+                <h5 className={`text-lg ${colors.primary} mb-1`}>{edu.institution}</h5>
+                <p className="text-gray-400 mb-4">{edu.period}</p>
+                <p className="text-gray-300">{edu.description}</p>
               </div>
             ))}
           </div>
@@ -439,57 +539,97 @@ const Portfolio = () => {
 
         {/* Contact Section */}
         <section id="contact" className={`mb-16 transform transition-all duration-700 min-h-[100px] ${isVisible.contact ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <h3 className="text-3xl font-bold text-emerald-400 mb-6">Contact</h3>
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <p className="text-lg mb-6">Get in touch with me!</p>
-            
-            <div className="space-y-4">
-              <a href="tel:+916372809100" className="flex items-center text-lg text-gray-300 hover:text-emerald-400 transition-colors p-2 rounded-lg hover:bg-gray-700">
-                <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-4">
-                  <Phone size={20} className="text-emerald-400" />
+          <h3 className={`text-3xl font-bold mb-6 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} bg-clip-text text-transparent`}>Contact</h3>
+          <div className={`${colors.cardBg} p-8 rounded-lg shadow-lg mb-8 border border-opacity-30 ${colors.border} backdrop-blur-sm`}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="text-xl font-semibold mb-6">Get In Touch</h4>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className={`p-3 rounded-full ${colors.primaryBg} text-white`}>
+                      <Mail size={20} />
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Email</p>
+                      <a href="mailto:aruphui@gmail.com" className={`${colors.primary} hover:underline`}>aruphui@gmail.com</a>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className={`p-3 rounded-full ${colors.primaryBg} text-white`}>
+                      <Phone size={20} />
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Phone</p>
+                      <a href="tel:+919439339834" className={`${colors.primary} hover:underline`}>+91 94393 39834</a>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className={`p-3 rounded-full ${colors.primaryBg} text-white`}>
+                      <MapPin size={20} />
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Location</p>
+                      <p className={`${colors.primary}`}>Hyderabad, India</p>
+                    </div>
+                  </div>
                 </div>
-                <span className="break-all">+91 6372809100</span>
-              </a>
-              
-              <a href="mailto:arupjyoti699@gmail.com" className="flex items-center text-lg text-gray-300 hover:text-emerald-400 transition-colors p-2 rounded-lg hover:bg-gray-700">
-                <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-4">
-                  <Mail size={20} className="text-emerald-400" />
-                </div>
-                <span className="break-all">arupjyoti699@gmail.com</span>
-              </a>
-              
-              <div className="flex items-center text-lg text-gray-300 p-2 rounded-lg">
-                <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-4">
-                  <MapPin size={20} className="text-emerald-400" />
-                </div>
-                Odisha, India
               </div>
-            </div>
-
-            {/* Contact form could be added here */}
-            <div className="mt-8 pt-6 border-t border-gray-700">
-              <p className="text-center text-gray-400">Connect with me on social media</p>
-              <div className="flex justify-center space-x-6 mt-4">
-                <a href="https://www.linkedin.com/in/aruphui" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 flex items-center" aria-label="LinkedIn Profile">
-                  <Linkedin size={24} />
-                </a>
-                <a href="https://github.com/aruphui" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 flex items-center" aria-label="GitHub Profile">
-                  <Github size={24} />
-                </a>
-                <a href="https://twitter.com/arup_hui" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 flex items-center" aria-label="Twitter Profile">
-                  <Twitter size={24} />
-                </a>
-                <a href="https://instagram.com/arup.hui" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 flex items-center" aria-label="Instagram Profile">
-                  <Instagram size={24} />
-                </a>
+              <div>
+                <h4 className="text-xl font-semibold mb-6">Connect</h4>
+                <p className="text-gray-300 mb-6">
+                  Let's connect on social media for professional networking and updates.
+                </p>
+                <div className="flex space-x-4">
+                  <a
+                    href="https://www.linkedin.com/in/aruphui"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`p-3 rounded-full ${colors.primaryBg} ${colors.buttonText} ${colors.primaryBgHover} transition-colors`}
+                    aria-label="LinkedIn Profile"
+                  >
+                    <Linkedin size={20} />
+                  </a>
+                  <a
+                    href="https://github.com/aruphui"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`p-3 rounded-full ${colors.primaryBg} ${colors.buttonText} ${colors.primaryBgHover} transition-colors`}
+                    aria-label="GitHub Profile"
+                  >
+                    <Github size={20} />
+                  </a>
+                  <a
+                    href="https://twitter.com/arup_hui"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`p-3 rounded-full ${colors.primaryBg} ${colors.buttonText} ${colors.primaryBgHover} transition-colors`}
+                    aria-label="Twitter Profile"
+                  >
+                    <Twitter size={20} />
+                  </a>
+                  <a
+                    href="https://instagram.com/arup.hui"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`p-3 rounded-full ${colors.primaryBg} ${colors.buttonText} ${colors.primaryBgHover} transition-colors`}
+                    aria-label="Instagram Profile"
+                  >
+                    <Instagram size={20} />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </section>
-        
+
         {/* Footer */}
-        <footer className="text-center text-gray-400 pb-8 pt-8">
-          <p>© 2025 Arup Jyoti Hui. All rights reserved.</p>
+        <footer className="text-center pb-6 pt-12 border-t border-gray-700">
+          <p className="text-gray-400">
+            &copy; 2025 Arup Jyoti Hui. All rights reserved.
+          </p>
+          <p className="text-gray-500 text-sm mt-2">
+            Built with React and Tailwind CSS
+          </p>
         </footer>
       </main>
     </div>
