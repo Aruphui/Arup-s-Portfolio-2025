@@ -525,7 +525,7 @@ const Portfolio = () => {
                 institution: "Fakir Mohan University, Baleswar",
                 period: "2018 — 2021",
                 
-              }
+              },
               {
                 degree: "Master of Computer Applications",
                 institution: "Chandigarh University, Chandigarh",
